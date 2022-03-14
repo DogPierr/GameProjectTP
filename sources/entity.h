@@ -9,6 +9,8 @@ class Entity {
   float x_, y_, speed_, h_, w_;
   Graphics graphics_;
 
+  Entity() = default;
+
   Entity(Graphics &graphics, float x, float y, float h, float w, float speed)
       : graphics_(graphics), x_(x), y_(y), h_(h), w_(w), speed_(speed) {}
 

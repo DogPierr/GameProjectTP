@@ -7,11 +7,16 @@
 
 class Player : public Entity {
  public:
-  Player(Graphics &graphics, float x, float y, float h, float w, float speed) : Entity(graphics, x, y, h, w, speed) {
+  Player(float x, float y, float h, float w, float speed) : Entity() {
+    x_ = x;
+    y_ = y;
+    h_ = h;
+    w_ = w;
+    speed_ = speed;
     sf::Texture texture;
     texture.loadFromFile("/home/dogpie/Projects/GameProjectTP/pls.png");
     graphics_.sprite_.setTexture(texture);
-    graphics_.frames_.emplace_back(0, 0, 32, 32);
+    graphics_.frames_.push_back(sf::IntRect(10, 10, 32, 32));
   }
 
   void Update() override {

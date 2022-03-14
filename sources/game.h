@@ -9,8 +9,7 @@
 void GameLoop() {
   sf::RenderWindow window(sf::VideoMode(800, 800), "plswork");
 
-  Graphics graphics;
-  Player player(graphics, 0, 0, 10, 10, 0.1);
+  Player player(10, 10, 10, 10, 0.1);
 
   while (window.isOpen()) {
     sf::Event event;
