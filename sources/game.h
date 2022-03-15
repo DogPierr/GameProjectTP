@@ -6,12 +6,14 @@
 #include "entity.h"
 #include "graphics.h"
 #include "player.h"
+#include "water_slime.h"
 
 class GameLoop {
  public:
   GameLoop() : window(sf::VideoMode(800, 800), "plswork"),
                graphics(Graphics()),
-               player(0, 0, 10, 10, 0.1) {}
+               player(100, 100, 10, 10, 0.1),
+               slime_(1000, 1000, 10, 10, 0.05){}
 
   void Run() {
     sf::Clock timer;
@@ -25,9 +27,12 @@ class GameLoop {
           window.close();
         }
       }
+      slime_.SetTarget(player);
       player.Update(time);
+      slime_.Update(time);
       window.clear();
       player.Draw(window);
+      slime_.Draw(window);
       window.display();
     }
   }
@@ -38,6 +43,7 @@ class GameLoop {
   sf::RenderWindow window;
   Graphics graphics;
   Player player;
+  WaterSlime slime_;
 };
 
 
