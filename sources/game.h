@@ -11,17 +11,21 @@ class GameLoop {
  public:
   GameLoop() : window(sf::VideoMode(800, 800), "plswork"),
                graphics(Graphics()),
-               player(graphics, 0, 0, 10, 10, 0.1) {}
+               player(0, 0, 10, 10, 0.1) {}
 
   void Run() {
+    sf::Clock timer;
     while (window.isOpen()) {
+      float time = timer.getElapsedTime().asSeconds();
+      timer.restart();
+
       sf::Event event;
       while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
           window.close();
         }
       }
-      player.Update();
+      player.Update(time);
       window.clear();
       player.Draw(window);
       window.display();

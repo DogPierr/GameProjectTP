@@ -18,7 +18,7 @@ class Entity {
     graphics_.Draw(window, x_, y_);
   };
 
-  virtual void Update() = 0;
+  virtual void Update(float time) = 0;
 
 };
 
