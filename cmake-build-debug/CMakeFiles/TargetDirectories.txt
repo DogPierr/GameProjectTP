@@ -1,0 +1,3 @@
+/home/dogpie/Projects/GameProjectTP/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/dogpie/Projects/GameProjectTP/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/dogpie/Projects/GameProjectTP/cmake-build-debug/CMakeFiles/GAME.dir
