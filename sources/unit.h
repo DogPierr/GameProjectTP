@@ -12,10 +12,6 @@ class Unit : public Entity {
 
   Unit() = default;
 
-  void Draw(sf::RenderWindow &window) {
-    graphics_.Draw(window, x_, y_);
-  };
-
   virtual void Update(float time) = 0;
 
 };

@@ -15,6 +15,7 @@ class GameLoop {
                water_slimes_() {}
 
   void Run() {
+    sf::View camera;
     sf::Clock timer;
     water_slimes_.push_back(new WaterSlime(0, 0, 10, 10, 0.05));
     water_slimes_.push_back(new WaterSlime(800, 0, 10, 10, 0.05));
@@ -43,6 +44,8 @@ class GameLoop {
       for (auto slime : water_slimes_) {
         slime->Draw(window);
       }
+      camera.setCenter(player->x_, player->y_);
+      window.setView(camera);
       window.display();
     }
   }

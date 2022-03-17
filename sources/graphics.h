@@ -10,6 +10,7 @@ class Graphics {
   std::vector<std::vector<sf::IntRect>> frames_, inverse_frames_;
   bool is_inverse_;
   sf::Sprite sprite_;
+  sf::Sprite area_;
   float fps_, current_frame_, state_;
 
   Graphics() : frames_(0), inverse_frames_(0), is_inverse_(false), fps_(5), current_frame_(0), state_(0) {}

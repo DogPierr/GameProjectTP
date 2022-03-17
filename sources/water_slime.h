@@ -20,6 +20,7 @@ class WaterSlime : public Unit {
     GenerateFrames();
     graphics_.state_ = 2;
     graphics_.sprite_.setTextureRect(graphics_.frames_[2][0]);
+    graphics_.sprite_.setColor(sf::Color(255, 255, 255, 50));
   }
 
   void Update(float time) {

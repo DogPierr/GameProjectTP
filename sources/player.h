@@ -14,7 +14,7 @@ class Player : public Unit {
     is_attacking_ = false;
     is_dead_ = false;
     is_full_dead_ = false;
-    health_ = 10;
+    health_ = 100;
     damage_ = 10;
     x_ = x;
     y_ = y;
