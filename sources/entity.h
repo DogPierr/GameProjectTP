@@ -6,19 +6,17 @@
 
 class Entity {
  public:
-  float x_, y_, speed_, h_, w_;
+  float x_, y_, h_, w_;
+  int health_;
   Graphics graphics_;
 
   Entity() = default;
-
-  Entity(Graphics &graphics, float x, float y, float h, float w, float speed)
-      : graphics_(graphics), x_(x), y_(y), h_(h), w_(w), speed_(speed) {}
 
   void Draw(sf::RenderWindow &window) {
     graphics_.Draw(window, x_, y_);
   };
 
-  virtual void Update() = 0;
+  virtual void Update(float time) = 0;
 
 };
 

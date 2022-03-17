@@ -8,5 +8,6 @@
 
 
 int main() {
-  GameLoop();
+  GameLoop game_loop;
+  game_loop.Run();
 }
