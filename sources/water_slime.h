@@ -6,23 +6,16 @@
 #include "player.h"
 #include "SFML/Graphics.hpp"
 
-class WaterSlime : public Entity {
+class WaterSlime : public Unit {
  public:
-  int health_;
-  float target_x_, target_y_;
-
-  WaterSlime(float x, float y, float h, float w, float speed) : Entity() {
-    graphics_ = Graphics("../sources/water_slime.png");
-    graphics_.sprite_.setTexture(graphics_.texture_);
-    graphics_.sprite_.setScale(3, 3);
-    health_ = 100;
+  WaterSlime(float x, float y, float h, float w, float speed) : Unit() {
+    health_ = 10;
+    damage_ = 5;
     x_ = x;
     y_ = y;
     h_ = h;
     w_ = w;
     speed_ = speed;
-    target_x_ = 0;
-    target_y_ = 0;
     is_attacking_ = false;
     GenerateFrames();
     graphics_.state_ = 2;
@@ -30,18 +23,34 @@ class WaterSlime : public Entity {
   }
 
   void Update(float time) {
-    MoveToTarget();
-    graphics_.ChangeFrame(time);
+    if (health_ <= 0) {
+      Die();
+    } else {
+      if (target_ != NULL) {
+        MoveToTarget();
+      }
+      if (target_->health_ <= 0) {
+        target_ = NULL;
+      }
+    }
+    if (!is_full_dead_) {
+      graphics_.ChangeFrame(time);
+    }
   }
 
-  void SetTarget(const Entity& target) {
-    target_x_ = target.x_;
-    target_y_ = target.y_;
+  void SetTarget(Unit* target) {
+    target_ = target;
   }
 
  private:
   bool is_attacking_;
+  int damage_;
+  Entity* target_;
+
   void GenerateFrames() {
+    graphics_ = Graphics("../sources/water_slime.png");
+    graphics_.sprite_.setTexture(graphics_.texture_);
+    graphics_.sprite_.setScale(3, 3);
     for (int j = 0; j < 5; ++j) {
       graphics_.inverse_frames_.emplace_back(0);
       for (int i = 0; i < 10; ++i) {
@@ -56,32 +65,53 @@ class WaterSlime : public Entity {
     }
   }
 
+  void Die() {
+    speed_ = 0;
+    if (!is_dead_) {
+      graphics_.current_frame_ = 0;
+      is_dead_ = true;
+    }
+    if (static_cast<int>(graphics_.current_frame_) == 9) {
+      is_full_dead_ = true;
+    }
+    graphics_.state_ = 4;
+  }
+
   void MoveToTarget() {
-    if (target_x_ < x_) {
+    if (target_->x_ < x_) {
       graphics_.is_inverse_ = true;
     } else {
       graphics_.is_inverse_ = false;
     }
-    float s = sqrt((target_y_ - y_) * (target_y_ - y_) + (target_x_ - x_) * (target_x_ - x_));
+    float s = sqrt((target_->y_ - y_) * (target_->y_ - y_) + (target_->x_ - x_) * (target_->x_ - x_));
     if (s < 50) {
-      if (is_attacking_) {
-        return;
-      }
-      graphics_.current_frame_ = 0;
-      graphics_.state_ = 3;
-      is_attacking_ = true;
+      Attack();
       return;
     }
     is_attacking_ = false;
     graphics_.state_ = 2;
-    float cos_alpha = (target_x_ - x_) / s;
-    float sin_alpha = (target_y_ - y_) / s;
+    float cos_alpha = (target_->x_ - x_) / s;
+    float sin_alpha = (target_->y_ - y_) / s;
 
     float dx_ = speed_ * cos_alpha;
     float dy_ = speed_ * sin_alpha;
 
     x_ += dx_;
     y_ += dy_;
+  }
+
+  void Attack() {
+    if (is_attacking_) {
+      if (static_cast<int>(graphics_.current_frame_) == 9) {
+        target_->health_ -= damage_;
+        graphics_.current_frame_ = 0;
+      }
+      return;
+    }
+    graphics_.fps_ = 15;
+    graphics_.current_frame_ = 0;
+    graphics_.state_ = 3;
+    is_attacking_ = true;
   }
 
 };
