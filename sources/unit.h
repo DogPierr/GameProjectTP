@@ -3,9 +3,9 @@
 
 #include "SFML/Graphics.hpp"
 #include "graphics.h"
-#include "entity.h"
+#include "mortal.h"
 
-class Unit : public Entity {
+class Unit : public Mortal {
  public:
   float speed_;
   bool is_dead_, is_full_dead_;

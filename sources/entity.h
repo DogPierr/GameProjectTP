@@ -7,7 +7,6 @@
 class Entity {
  public:
   float x_, y_, h_, w_;
-  int health_;
   Graphics graphics_;
 
   Entity() = default;

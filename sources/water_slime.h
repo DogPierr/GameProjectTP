@@ -39,14 +39,14 @@ class WaterSlime : public Unit {
     }
   }
 
-  void SetTarget(Unit* target) {
+  void SetTarget(Mortal* target) {
     target_ = target;
   }
 
  private:
   bool is_attacking_;
   int damage_;
-  Entity* target_;
+  Mortal* target_;
 
   void GenerateFrames() {
     graphics_ = Graphics("../sources/water_slime.png");
