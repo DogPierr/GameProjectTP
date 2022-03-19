@@ -3,18 +3,26 @@
 
 #include "SFML/Graphics.hpp"
 #include "cmath"
-#include "unit.h"
 #include "entity.h"
+#include "static_graphics.h"
+#include "unit.h"
 
 class Player : public Unit {
  public:
   std::vector<float> line_of_sight_;
+  Graphics background;
+  Graphics frame;
 
-  Player(float x, float y, float h, float w, float speed) : Unit() {
+  Player(float x, float y, float h, float w, float speed)
+      : Unit(),
+        background("../sources/background.png"),
+        frame("../sources/frame.png") {
+    background.sprite_.setScale(0.3, 0.3);
+    frame.sprite_.setScale(0.3, 0.3);
     is_attacking_ = false;
     is_dead_ = false;
     is_full_dead_ = false;
-    health_ = 100;
+    health_ = 100000;
     damage_ = 10;
     x_ = x;
     y_ = y;
@@ -26,16 +34,19 @@ class Player : public Unit {
     graphics_.sprite_.setTextureRect(graphics_.frames_[0][0]);
   }
 
-  void Attack(Unit *enemy) {
+  void Attack(Unit* enemy) {
     std::vector<float> radius_vector(2);
     radius_vector[0] = enemy->x_ - x_;
     radius_vector[1] = enemy->y_ - y_;
-    float distance = sqrt((enemy->x_ - x_) * (enemy->x_ - x_) + (enemy->y_ - y_) * (enemy->y_ - y_));
-    float line_of_sight_s = sqrt(line_of_sight_[0] * line_of_sight_[0] + line_of_sight_[1] * line_of_sight_[1]);
-    float angle =
-        (line_of_sight_[0] * radius_vector[0] + line_of_sight_[1] * radius_vector[1]) / (distance * line_of_sight_s);
-    if (is_attacking_ && static_cast<int>(graphics_.current_frame_) == 9 && angle >= 0
-        && distance <= 50) {
+    float distance = sqrt((enemy->x_ - x_) * (enemy->x_ - x_) +
+                          (enemy->y_ - y_) * (enemy->y_ - y_));
+    float line_of_sight_s = sqrt(line_of_sight_[0] * line_of_sight_[0] +
+                                 line_of_sight_[1] * line_of_sight_[1]);
+    float angle = (line_of_sight_[0] * radius_vector[0] +
+                   line_of_sight_[1] * radius_vector[1]) /
+                  (distance * line_of_sight_s);
+    if (is_attacking_ && static_cast<int>(graphics_.current_frame_) == 9 &&
+        angle >= 0 && distance <= 50) {
       enemy->health_ -= damage_;
     }
   }
@@ -50,9 +61,15 @@ class Player : public Unit {
     }
   }
 
-  ~Player() {
-
+  void DrawBackground(sf::RenderWindow& window) {
+    background.Draw(window, -102 + x_, -102 + y_);
   }
+
+  void DrawFrame(sf::RenderWindow& window) {
+    frame.Draw(window, -102 + x_, -102 + y_);
+  }
+
+  ~Player() {}
 
  private:
   bool is_attacking_;
@@ -91,7 +108,9 @@ class Player : public Unit {
         graphics_.state_ = 8;
         is_attacking_ = true;
       }
-      if (!IsKeyPressed() || (IsKeyPressed() && !sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && is_attacking_)) {
+      if (!IsKeyPressed() ||
+          (IsKeyPressed() && !sf::Keyboard::isKeyPressed(sf::Keyboard::Space) &&
+           is_attacking_)) {
         graphics_.fps_ = 5;
         graphics_.state_ = 0;
         is_attacking_ = false;
@@ -100,19 +119,21 @@ class Player : public Unit {
   }
 
   void GenerateFrames() {
-    graphics_ = Graphics("../sources/rogue.png");
+    graphics_ = DynamicGraphics("../sources/rogue.png");
     graphics_.sprite_.setTexture(graphics_.texture_);
     graphics_.sprite_.setScale(3, 3);
     for (int j = 0; j < 10; ++j) {
       graphics_.frames_.emplace_back(0);
       for (int i = 0; i < 10; ++i) {
-        graphics_.frames_[j].push_back(sf::IntRect(9 + i * 32, 1 + j * 32, 20, 31));
+        graphics_.frames_[j].push_back(
+            sf::IntRect(9 + i * 32, 1 + j * 32, 20, 31));
       }
     }
     for (int j = 0; j < 10; ++j) {
       graphics_.inverse_frames_.emplace_back(0);
       for (int i = 0; i < 10; ++i) {
-        graphics_.inverse_frames_[j].push_back(sf::IntRect(9 + i * 32 + 20, 1 + j * 32, -20, 31));
+        graphics_.inverse_frames_[j].push_back(
+            sf::IntRect(9 + i * 32 + 20, 1 + j * 32, -20, 31));
       }
     }
   }
@@ -130,10 +151,12 @@ class Player : public Unit {
   }
 
   static bool IsKeyPressed() {
-    return sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)
-        || sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::A)
-        || sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+    return sf::Keyboard::isKeyPressed(sf::Keyboard::W) ||
+           sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
+           sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
+           sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
+           sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
   }
 };
 
-#endif //GAMEPROJECTTP_SOURCES_PLAYER_H_
+#endif  // GAMEPROJECTTP_SOURCES_PLAYER_H_
