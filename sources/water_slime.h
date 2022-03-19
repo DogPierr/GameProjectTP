@@ -1,6 +1,7 @@
 #ifndef GAME_ON_SFML_SOURCES_WATER_SLIME_H_
 #define GAME_ON_SFML_SOURCES_WATER_SLIME_H_
 
+#include "map.h"
 #include "entity.h"
 #include "cmath"
 #include "player.h"
@@ -9,8 +10,10 @@
 class WaterSlime : public Unit {
  public:
   WaterSlime(float x, float y, float h, float w, float speed) : Unit() {
-    health_ = 10;
+    health_ = 20;
+    max_health_ = health_;
     damage_ = 5;
+    target_ = nullptr;
     x_ = x;
     y_ = y;
     h_ = h;
@@ -18,20 +21,24 @@ class WaterSlime : public Unit {
     speed_ = speed;
     is_attacking_ = false;
     GenerateFrames();
-    graphics_.state_ = 2;
+    graphics_.state_ = "walk";
+    graphics_.states_["walk"] = 2;
+    graphics_.states_["attack"] = 3;
+    graphics_.states_["die"] = 4;
     graphics_.sprite_.setTextureRect(graphics_.frames_[2][0]);
     graphics_.sprite_.setColor(sf::Color(255, 255, 255, 50));
   }
 
-  void Update(float time) {
+  void Update(float time) override {
     if (health_ <= 0) {
+      speed_ = 0;
       Die();
     } else {
-      if (target_ != NULL) {
+      if (target_ != nullptr) {
         MoveToTarget();
       }
       if (target_->health_ <= 0) {
-        target_ = NULL;
+        target_ = nullptr;
       }
     }
     if (!is_full_dead_) {
@@ -43,13 +50,19 @@ class WaterSlime : public Unit {
     target_ = target;
   }
 
+  bool IsInRadius(Entity* entity) {
+    float distance = sqrt((entity->x_ - x_) * (entity->x_ - x_) + (entity->y_ - y_) * (entity->y_ - y_));
+    return distance < radius;
+  }
+
  private:
+  const float radius = 100;
   bool is_attacking_;
   int damage_;
   Mortal* target_;
 
   void GenerateFrames() {
-    graphics_ = Graphics("../sources/water_slime.png");
+    graphics_ = DynamicGraphics("../sources/images/water_slime.png");
     graphics_.sprite_.setTexture(graphics_.texture_);
     graphics_.sprite_.setScale(3, 3);
     for (int j = 0; j < 5; ++j) {
@@ -66,18 +79,6 @@ class WaterSlime : public Unit {
     }
   }
 
-  void Die() {
-    speed_ = 0;
-    if (!is_dead_) {
-      graphics_.current_frame_ = 0;
-      is_dead_ = true;
-    }
-    if (static_cast<int>(graphics_.current_frame_) == 9) {
-      is_full_dead_ = true;
-    }
-    graphics_.state_ = 4;
-  }
-
   void MoveToTarget() {
     if (target_->x_ < x_) {
       graphics_.is_inverse_ = true;
@@ -90,7 +91,7 @@ class WaterSlime : public Unit {
       return;
     }
     is_attacking_ = false;
-    graphics_.state_ = 2;
+    graphics_.state_ = "walk";
     float cos_alpha = (target_->x_ - x_) / s;
     float sin_alpha = (target_->y_ - y_) / s;
 
@@ -111,7 +112,7 @@ class WaterSlime : public Unit {
     }
     graphics_.fps_ = 15;
     graphics_.current_frame_ = 0;
-    graphics_.state_ = 3;
+    graphics_.state_ = "attack";
     is_attacking_ = true;
   }
 
