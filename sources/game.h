@@ -35,6 +35,8 @@ class GameLoop {
           window.close();
         }
       }
+      window.clear();
+      fire_->DrawBackground(window);
       for (auto slime : water_slimes_) {
         slime->SetTarget(player);
         slime->Update(time);
@@ -42,19 +44,18 @@ class GameLoop {
         player->Attack(slime);
       }
       player->Update(time);
-      window.clear();
-      fire_->DrawBackground(window);
-      fire_->DrawFrame(window);
-      fire_->Update(time);
-      fire_->Draw(window);
-      if (!fire_->IsInRadius(player)) {
-        player->DrawBackground(window);
-        player->DrawFrame(window);
-      }
       player->Draw(window);
       for (auto slime : water_slimes_) {
         slime->Draw(window);
       }
+      fire_->DrawFrame(window);
+      if (!fire_->IsInRadius(player)) {
+        player->DrawBackground(window);
+        player->DrawFrame(window);
+        player->Draw(window);
+      }
+      fire_->Update(time);
+      fire_->Draw(window);
       camera.setCenter(player->x_, player->y_);
       window.setView(camera);
       window.display();
