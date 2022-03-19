@@ -25,7 +25,7 @@ class GameLoop {
     water_slimes_.push_back(new WaterSlime(0, 800, 10, 10, 0.05));
     water_slimes_.push_back(new WaterSlime(800, 800, 10, 10, 0.05));
 
-    while (window.isOpen()) {
+    while (window.isOpen() && player->health_ > 0 && fire_->health_ > 0) {
       float time = timer.getElapsedTime().asSeconds();
       timer.restart();
 
