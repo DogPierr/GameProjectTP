@@ -3,27 +3,25 @@
 
 #include "SFML/Graphics.hpp"
 #include "entity.h"
+#include "static_graphics.h"
 
-class Graphics {
+class DynamicGraphics : public Graphics {
  public:
-  sf::Texture texture_;
   std::vector<std::vector<sf::IntRect>> frames_, inverse_frames_;
-  bool is_inverse_;
-  sf::Sprite sprite_;
+  bool is_inverse_ = false;
   sf::Sprite area_;
-  float fps_, current_frame_, state_;
+  float fps_ = 5, current_frame_ = 0, state_;
 
-  Graphics() : frames_(0), inverse_frames_(0), is_inverse_(false), fps_(5), current_frame_(0), state_(0) {}
+  DynamicGraphics()
+      : frames_(0),
+        inverse_frames_(0),
+        is_inverse_(false),
+        fps_(5),
+        current_frame_(0),
+        state_(0) {}
 
-  Graphics(const std::string &image)
-      : frames_(0), inverse_frames_(0), is_inverse_(false), fps_(5), current_frame_(0), state_(0) {
-    texture_.loadFromFile(image);
-  }
-
-  void Draw(sf::RenderWindow &window, float x, float y) {
-    sprite_.setPosition(x, y);
-    window.draw(sprite_);
-  }
+  DynamicGraphics(const std::string& image)
+      : Graphics(image), frames_(0), inverse_frames_(0), is_inverse_(false), state_(0) {}
 
   void ChangeFrame(float time) {
     current_frame_ += fps_ * time;
@@ -36,7 +34,6 @@ class Graphics {
     }
     sprite_.setTextureRect(inverse_frames_[state_][current_frame_]);
   }
-
 };
 
-#endif //GAMEPROJECTTP_SOURCES_GRAPHICS_H_
+#endif  // GAMEPROJECTTP_SOURCES_GRAPHICS_H_
