@@ -3,7 +3,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "entity.h"
-#include "graphics.h"
+#include "dynamic_graphics.h"
 #include "map.h"
 #include "player.h"
 #include "water_slime.h"
