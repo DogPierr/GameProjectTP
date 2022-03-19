@@ -15,14 +15,15 @@ class Player : public Unit {
 
   Player(float x, float y, float h, float w, float speed)
       : Unit(),
-        background("../sources/background.png"),
-        frame("../sources/frame.png") {
+        background("../sources/images/background.png"),
+        frame("../sources/images/frame.png") {
+    health_ = 100;
+    max_health_ = health_;
     background.sprite_.setScale(0.3, 0.3);
     frame.sprite_.setScale(0.3, 0.3);
     is_attacking_ = false;
     is_dead_ = false;
     is_full_dead_ = false;
-    health_ = 100000;
     damage_ = 10;
     x_ = x;
     y_ = y;
@@ -31,6 +32,11 @@ class Player : public Unit {
     speed_ = speed;
     line_of_sight_ = {1, 0};
     GenerateFrames();
+    graphics_.states_["stay"] = 0;
+    graphics_.states_["walk"] = 7;
+    graphics_.states_["attack"] = 8;
+    graphics_.states_["die"] = 9;
+    graphics_.state_ = "stay";
     graphics_.sprite_.setTextureRect(graphics_.frames_[0][0]);
   }
 
@@ -48,11 +54,13 @@ class Player : public Unit {
     if (is_attacking_ && static_cast<int>(graphics_.current_frame_) == 9 &&
         angle >= 0 && distance <= 50) {
       enemy->health_ -= damage_;
+      graphics_.current_frame_ = 0;
     }
   }
 
   void Update(float time) override {
     if (health_ <= 0) {
+      speed_ = 0;
       Die();
     }
     KeyboardRead();
@@ -72,54 +80,51 @@ class Player : public Unit {
   ~Player() {}
 
  private:
-  bool is_attacking_;
-  int damage_;
-
   void KeyboardRead() {
     if (!is_dead_) {
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && !is_attacking_) {
         line_of_sight_ = {0, -1};
         graphics_.fps_ = 5;
         y_ -= speed_;
-        graphics_.state_ = 7;
+        graphics_.state_ = "walk";
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && !is_attacking_) {
         line_of_sight_ = {0, 1};
         graphics_.fps_ = 5;
         y_ += speed_;
-        graphics_.state_ = 7;
+        graphics_.state_ = "walk";
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && !is_attacking_) {
         line_of_sight_ = {1, 0};
         graphics_.fps_ = 5;
         x_ += speed_;
-        graphics_.state_ = 7;
+        graphics_.state_ = "walk";
         graphics_.is_inverse_ = false;
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !is_attacking_) {
         line_of_sight_ = {-1, 0};
         graphics_.fps_ = 5;
         x_ -= speed_;
-        graphics_.state_ = 7;
+        graphics_.state_ = "walk";
         graphics_.is_inverse_ = true;
       }
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
         graphics_.fps_ = 12;
-        graphics_.state_ = 8;
+        graphics_.state_ = "attack";
         is_attacking_ = true;
       }
       if (!IsKeyPressed() ||
           (IsKeyPressed() && !sf::Keyboard::isKeyPressed(sf::Keyboard::Space) &&
            is_attacking_)) {
         graphics_.fps_ = 5;
-        graphics_.state_ = 0;
+        graphics_.state_ = "stay";
         is_attacking_ = false;
       }
     }
   }
 
   void GenerateFrames() {
-    graphics_ = DynamicGraphics("../sources/rogue.png");
+    graphics_ = DynamicGraphics("../sources/images/rogue.png");
     graphics_.sprite_.setTexture(graphics_.texture_);
     graphics_.sprite_.setScale(3, 3);
     for (int j = 0; j < 10; ++j) {
@@ -136,18 +141,6 @@ class Player : public Unit {
             sf::IntRect(9 + i * 32 + 20, 1 + j * 32, -20, 31));
       }
     }
-  }
-
-  void Die() {
-    speed_ = 0;
-    if (!is_dead_) {
-      graphics_.current_frame_ = 0;
-      is_dead_ = true;
-    }
-    if (static_cast<int>(graphics_.current_frame_) == 9) {
-      is_full_dead_ = true;
-    }
-    graphics_.state_ = 9;
   }
 
   static bool IsKeyPressed() {

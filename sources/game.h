@@ -3,7 +3,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "entity.h"
-#include "graphics.h"
+#include "dynamic_graphics.h"
 #include "map.h"
 #include "player.h"
 #include "water_slime.h"
@@ -11,9 +11,9 @@
 class GameLoop {
  public:
   GameLoop()
-      : window(sf::VideoMode(1000, 1000), "plswork"),
+      : window_(sf::VideoMode(1000, 1000), "plswork"),
         graphics(DynamicGraphics()),
-        player(new Player(0, 0, 10, 10, 0.1)),
+        player_(new Player(0, 0, 10, 10, 0.1)),
         fire_(new Fire),
         water_slimes_() {}
 
@@ -25,56 +25,62 @@ class GameLoop {
     water_slimes_.push_back(new WaterSlime(0, 800, 10, 10, 0.05));
     water_slimes_.push_back(new WaterSlime(800, 800, 10, 10, 0.05));
 
-    while (window.isOpen()) {
+    while (window_.isOpen() && player_->health_ > 0 && fire_->health_ > 0) {
       float time = timer.getElapsedTime().asSeconds();
       timer.restart();
 
       sf::Event event;
-      while (window.pollEvent(event)) {
+      while (window_.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
-          window.close();
+          window_.close();
         }
       }
-      window.clear();
-      fire_->DrawBackground(window);
+      window_.clear();
+      fire_->DrawBackground(window_);
       for (auto slime : water_slimes_) {
-        slime->SetTarget(player);
+        slime->SetTarget(fire_);
+        if (slime->IsInRadius(player_)) {
+          slime->SetTarget(player_);
+        }
         slime->Update(time);
-        slime->Draw(window);
-        player->Attack(slime);
+        slime->Draw(window_);
+        player_->Attack(slime);
       }
-      player->Update(time);
-      player->Draw(window);
+      player_->Update(time);
+      player_->Draw(window_);
       for (auto slime : water_slimes_) {
-        slime->Draw(window);
+        slime->Draw(window_);
       }
-      fire_->DrawFrame(window);
-      if (!fire_->IsInRadius(player)) {
-        player->DrawBackground(window);
+      fire_->DrawFrame(window_);
+      if (!fire_->IsInRadius(player_)) {
+        player_->DrawBackground(window_);
         for (auto slime : water_slimes_) {
-          slime->SetTarget(player);
+          slime->SetTarget(fire_);
+          if (slime->IsInRadius(player_)) {
+            slime->SetTarget(player_);
+          }
           slime->Update(time);
-          slime->Draw(window);
-          player->Attack(slime);
+          slime->Draw(window_);
+          player_->Attack(slime);
         }
-        player->DrawFrame(window);
-        player->Draw(window);
+        player_->DrawFrame(window_);
+        player_->Draw(window_);
       }
       fire_->Update(time);
-      fire_->Draw(window);
-      camera.setCenter(player->x_, player->y_);
-      window.setView(camera);
-      window.display();
+      fire_->Draw(window_);
+      camera.setCenter(player_->x_, player_->y_);
+      window_.setView(camera);
+      window_.display();
     }
   }
 
   void Terminate() {}
 
  private:
-  sf::RenderWindow window;
+  sf::RenderWindow window_;
   std::vector<WaterSlime*> water_slimes_;
   DynamicGraphics graphics;
-  Player* player;
+  Player* player_;
   Fire* fire_;
 };
 

@@ -7,8 +7,11 @@
 class Fire : public Mortal {
  public:
   Fire()
-      : background("../sources/background.png"), frame("../sources/frame.png") {
+      : background("../sources/images/background.png"), frame("../sources/images/frame.png") {
     health_ = 50;
+    max_health_ = health_;
+    graphics_.state_ = "burn";
+    graphics_.states_["burn"] = 0;
     x_ = -96;
     y_ = -96;
     h_ = 64;
@@ -18,7 +21,7 @@ class Fire : public Mortal {
   }
 
   void GenerateFrames() {
-    graphics_ = DynamicGraphics("../sources/CampFire.png");
+    graphics_ = DynamicGraphics("../sources/images/CampFire.png");
     graphics_.sprite_.setTexture(graphics_.texture_);
     graphics_.sprite_.setScale(3, 3);
     graphics_.frames_.emplace_back(0);

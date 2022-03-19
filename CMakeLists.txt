@@ -1,4 +1,4 @@
-icmake_minimum_required(VERSION 3.16.3)
+cmake_minimum_required(VERSION 3.16.3)
 project(GAME_ON_SFML)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)

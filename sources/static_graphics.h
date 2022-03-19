@@ -14,6 +14,10 @@ class Graphics {
     sprite_.setTexture(texture_);
   }
 
+  Graphics(const sf::Color& color) {
+    sprite_.setColor(color);
+  }
+
   void Draw(sf::RenderWindow& window, float x, float y) {
     sprite_.setPosition(x, y);
     window.draw(sprite_);

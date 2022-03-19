@@ -2,7 +2,7 @@
 #define GAMEPROJECTTP_SOURCES_ENTITY_H_
 
 #include "SFML/Graphics.hpp"
-#include "graphics.h"
+#include "dynamic_graphics.h"
 
 class Entity {
  public:

@@ -100,7 +100,7 @@
         </UML:Operation>
         <UML:Operation isSpecification="false" isLeaf="false" isRoot="false" isAbstract="false" xmi.id="u4FkwnivFTpEH" name="Draw" visibility="public" isQuery="false" isOverride="false" isVirtual="false" isInline="false">
          <UML:BehavioralFeature.parameter>
-          <UML:Parameter isSpecification="false" xmi.id="u2T6UmV6f5XEK" name="window" visibility="private" type="u2stXS0RGK7H7" value=""/>
+          <UML:Parameter isSpecification="false" xmi.id="u2T6UmV6f5XEK" name="window_" visibility="private" type="u2stXS0RGK7H7" value=""/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
         <UML:Operation isSpecification="false" isLeaf="false" isRoot="false" isAbstract="false" xmi.id="uiCYGOL5FQYxL" name="ChangeFrame" visibility="public" isQuery="false" isOverride="false" isVirtual="false" isInline="false">
@@ -118,7 +118,7 @@
         <UML:Operation isSpecification="false" isLeaf="false" isRoot="false" isAbstract="false" xmi.id="ulUT3bQMElS9L" name="Entity" visibility="public" isQuery="false" isOverride="false" isVirtual="false" isInline="false"/>
         <UML:Operation isSpecification="false" isLeaf="false" isRoot="false" isAbstract="false" xmi.id="uX0jSOqXQptFN" name="Draw" visibility="public" isQuery="false" isOverride="false" isVirtual="false" isInline="false">
          <UML:BehavioralFeature.parameter>
-          <UML:Parameter isSpecification="false" xmi.id="ugbv8cEm01INk" name="window" visibility="private" type="u2stXS0RGK7H7" value=""/>
+          <UML:Parameter isSpecification="false" xmi.id="ugbv8cEm01INk" name="window_" visibility="private" type="u2stXS0RGK7H7" value=""/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
         <UML:Operation isSpecification="false" isLeaf="false" isRoot="false" isAbstract="false" xmi.id="u4HzJPBRTm3CW" name="Update" visibility="public" isQuery="false" isOverride="false" isVirtual="true" isInline="false">
