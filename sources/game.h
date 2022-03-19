@@ -4,15 +4,18 @@
 #include "SFML/Graphics.hpp"
 #include "entity.h"
 #include "graphics.h"
+#include "map.h"
 #include "player.h"
 #include "water_slime.h"
 
 class GameLoop {
  public:
-  GameLoop() : window(sf::VideoMode(800, 800), "plswork"),
-               graphics(Graphics()),
-               player(new Player(100, 100, 10, 10, 0.1)),
-               water_slimes_() {}
+  GameLoop()
+      : window(sf::VideoMode(1000, 1000), "plswork"),
+        graphics(DynamicGraphics()),
+        player(new Player(0, 0, 10, 10, 0.1)),
+        fire_(new Fire),
+        water_slimes_() {}
 
   void Run() {
     sf::View camera;
@@ -32,7 +35,7 @@ class GameLoop {
           window.close();
         }
       }
-      for (auto slime: water_slimes_) {
+      for (auto slime : water_slimes_) {
         slime->SetTarget(player);
         slime->Update(time);
         slime->Draw(window);
@@ -40,6 +43,14 @@ class GameLoop {
       }
       player->Update(time);
       window.clear();
+      fire_->DrawBackground(window);
+      fire_->DrawFrame(window);
+      fire_->Update(time);
+      fire_->Draw(window);
+      if (!fire_->IsInRadius(player)) {
+        player->DrawBackground(window);
+        player->DrawFrame(window);
+      }
       player->Draw(window);
       for (auto slime : water_slimes_) {
         slime->Draw(window);
@@ -55,9 +66,9 @@ class GameLoop {
  private:
   sf::RenderWindow window;
   std::vector<WaterSlime*> water_slimes_;
-  Graphics graphics;
-  Player *player;
+  DynamicGraphics graphics;
+  Player* player;
+  Fire* fire_;
 };
 
-
-#endif //GAME_ON_SFML_SOURCES_GAME_H_
+#endif  // GAME_ON_SFML_SOURCES_GAME_H_
