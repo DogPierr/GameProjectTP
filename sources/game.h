@@ -51,6 +51,12 @@ class GameLoop {
       fire_->DrawFrame(window);
       if (!fire_->IsInRadius(player)) {
         player->DrawBackground(window);
+        for (auto slime : water_slimes_) {
+          slime->SetTarget(player);
+          slime->Update(time);
+          slime->Draw(window);
+          player->Attack(slime);
+        }
         player->DrawFrame(window);
         player->Draw(window);
       }
